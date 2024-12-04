@@ -2,11 +2,12 @@ import ContextFreeGrammar as cfg
 import Example as ie
 #Formatting
 from colorama import Fore, Style
+import pyfiglet as enlarge
 
 def print_blue_text(text):
     print(Fore.BLUE +
           "\n" +
-          text +
+          enlarge.figlet_format(text) +
           Style.RESET_ALL)
 
 my_grammar = ie.example_table()
