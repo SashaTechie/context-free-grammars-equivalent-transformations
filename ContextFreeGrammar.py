@@ -97,23 +97,36 @@ def delete_unavailable_useless_terminals(table=DataFrame()):
                         if state in useless_nonterminals:
                             table.iloc[lin, col] = states.remove(state)
 
+        table = resolve_left_empty_cells(table)
+
         if len(useless_nonterminals) > 0:
             print(
                 "Обнаружены и удалены бесполезные нетерминалы:",
+                "\n",
+                "❌ ",
                 "".join(useless_nonterminals)
                 if len(useless_nonterminals) > 1
-                else ", ".join(useless_nonterminals)
+                else ", ".join(useless_nonterminals),
+                sep=""
             )
+            is_edited = True
         if len(unavailable_nonterminals) > 0:
             print(
                 "Обнаружены и удалены недоступные нетерминалы:",
+                "\n",
+                "❌ ",
                 "".join(unavailable_nonterminals)
                 if len(unavailable_nonterminals) > 1
-                else ", ".join(unavailable_nonterminals)
+                else ", ".join(unavailable_nonterminals),
+                sep=""
             )
+            is_edited = True
 
         if (not useless_nonterminals) and (0 not in nonterminals_transitions.values()):
-            print("Все проблемы устранены.")
+            if is_edited == True:
+                print("Проблемы устранены:")
+            else:
+                print("Проблемы не обнаружены:")
             break
 
     return table
@@ -167,6 +180,14 @@ def resolve_epsilon_rules(table=DataFrame()):
                                         new_alternatives
                                     )
 
+                                    print(
+                                        "Устраним eps-правило: ",
+                                        "\n",
+                                        "✏️ Нетерминал: ", table.iloc[lin, 0],
+                                        "\n",
+                                        "➕ Новые элементы: ", ' | '.join(''.join(na) for na in new_alternatives)
+                                    )
+
             if table.iloc[lin, col] is not None:
                 if 'eps' in table.iloc[lin, col]:
                     table.iloc[lin, col] = None
@@ -190,10 +211,13 @@ def resolve_chained_rules(table=DataFrame()):
 
     if chained_lines:
         print(
-            "Обнаружены цепные правила для данных нетерминалов:",
+            "Обнаружены цепные правила для данных нетерминалов: ",
             ", ".join(chained_lines)
             if len(chained_lines) > 1
-            else chained_lines
+            else chained_lines,
+            "\n",
+            "Устраним их:",
+            sep=""
         )
         while chained_lines:
             chained_line_name = chained_lines.pop()
