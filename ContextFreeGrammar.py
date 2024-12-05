@@ -5,6 +5,7 @@ from tabulate import tabulate
 from string import ascii_uppercase
 from itertools import combinations
 from collections import defaultdict
+from colorama import Fore, Style
 
 
 def put_states_in_array(table=DataFrame()):
@@ -473,3 +474,4 @@ def add_alternatives_to_table(table, lin, new_alternatives):
             table[new_column_name] = None
 
         table.at[lin, new_column_name] = list(new_alternative)
+
