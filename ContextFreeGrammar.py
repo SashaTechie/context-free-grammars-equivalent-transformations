@@ -1,11 +1,9 @@
-#Table
 import pandas as pd
 from pandas import DataFrame
 from tabulate import tabulate
 from string import ascii_uppercase
 from itertools import combinations
 from collections import defaultdict
-from colorama import Fore, Style
 
 
 def put_states_in_array(table=DataFrame()):
@@ -18,6 +16,7 @@ def put_states_in_array(table=DataFrame()):
                 continue
             else:
                 table.iloc[lin, col] = list(nonterminal_transition)
+
     return table
 
 
@@ -100,6 +99,8 @@ def delete_unavailable_useless_terminals(table=DataFrame()):
 
         table = resolve_left_empty_cells(table)
 
+        is_edited = False
+
         if len(useless_nonterminals) > 0:
             print(
                 "Обнаружены и удалены бесполезные нетерминалы:",
@@ -124,7 +125,7 @@ def delete_unavailable_useless_terminals(table=DataFrame()):
             is_edited = True
 
         if (not useless_nonterminals) and (0 not in nonterminals_transitions.values()):
-            if is_edited == True:
+            if is_edited:
                 print("Проблемы устранены:")
             else:
                 print("Проблемы не обнаружены:")
@@ -211,15 +212,14 @@ def resolve_chained_rules(table=DataFrame()):
                 chained_lines.append(table.iloc[lin, 0])
 
     if chained_lines:
-        print(
-            "Обнаружены цепные правила для данных нетерминалов: ",
-            ", ".join(chained_lines)
-            if len(chained_lines) > 1
-            else chained_lines,
-            "\n",
-            "Устраним их:",
-            sep=""
-        )
+        print("Обнаружены цепные правила для данных нетерминалов: ")
+        for chained_line in chained_lines:
+            print(
+                "✔️ ",
+                chained_line,
+                sep=""
+            )
+        print("Устраним их:")
         while chained_lines:
             chained_line_name = chained_lines.pop()
             target_line = get_target_line(table, chained_line_name)
@@ -407,6 +407,7 @@ def format_dict(dictionary):
     formatted_output = []
     for key, values in dictionary.items():
         formatted_output.append(f"{key}: {values}")
+
     return "\n".join(formatted_output)
 
 
